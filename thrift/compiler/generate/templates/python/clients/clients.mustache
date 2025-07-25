@@ -24,7 +24,7 @@ import builtins
 import typing as _typing
 import types as _py_types
 
-import apache.thrift.metadata.thrift_types as _fbthrift_metadata
+from . import thrift_types as _fbthrift_metadata
 import folly.iobuf as _fbthrift_iobuf
 from {{program:base_library_package}}.client import (
     AsyncClient as _fbthrift_python_AsyncClient,
