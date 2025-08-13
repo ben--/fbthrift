@@ -1,0 +1,26 @@
+load("@fbcode_macros//build_defs:rust_library.bzl", "rust_library")
+
+oncall("thrift")
+
+rust_library(
+    name = "fbthrift",
+    srcs = glob(["src/**/*.rs"]),
+    crate_root = "src/lib.rs",
+    edition = "2024",
+    visibility = ["PUBLIC"],
+    deps = [
+        "fbsource//third-party/rust:anyhow",
+        "fbsource//third-party/rust:async-trait",
+        "fbsource//third-party/rust:base64",
+        "fbsource//third-party/rust:bufsize",
+        "fbsource//third-party/rust:bytes",
+        "fbsource//third-party/rust:futures",
+        "fbsource//third-party/rust:ghost",
+        "fbsource//third-party/rust:num-derive",
+        "fbsource//third-party/rust:num-traits",
+        "fbsource//third-party/rust:ordered-float",
+        "fbsource//third-party/rust:panic-message",
+        "fbsource//third-party/rust:serde_json",
+        "fbsource//third-party/rust:thiserror",
+    ],
+)

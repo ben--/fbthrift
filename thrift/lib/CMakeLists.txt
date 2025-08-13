@@ -141,6 +141,7 @@ if(thriftpy3)
     "python/server/server.pxd"
     "python/std_libcpp.pxd"
     "python/stream.pxd"
+    "python/streaming/bidistream.pxd"
     "python/streaming/py_promise.pxd"
     "python/streaming/python_user_exception.pxd"
     "python/streaming/sink.pxd"
@@ -171,6 +172,7 @@ if(thriftpy3)
     "python/server/request_context.pyx"
     "python/server/server.pyx"
     "python/stream.pyx"
+    "python/streaming/bidistream.pyx"
     "python/streaming/py_promise.pyx"
     "python/streaming/python_user_exception.pyx"
     "python/streaming/sink.pyx"
@@ -188,6 +190,8 @@ if(thriftpy3)
 
     "python/server/PythonAsyncProcessor.cpp"
     "python/server/PythonAsyncProcessorFactory.cpp"
+    "python/streaming/__init__.py"
+    "python/streaming/BiDiStream.cpp"
     "python/streaming/PythonUserException.cpp"
     "python/streaming/Sink.cpp"
     "python/streaming/StreamElementEncoder.cpp"
@@ -367,7 +371,11 @@ if(thriftpy3)
       python/Serializer.cpp
       py3/stream.cpp
   )
-  add_dependencies(thrift_python_cpp create_cython_types_api_symlink)
+  add_dependencies(
+    thrift_python_cpp
+      create_cython_types_api_symlink
+      thrift_python_types_bindings
+  )
   set_property(TARGET thrift_python_cpp PROPERTY VERSION ${PACKAGE_VERSION})
   target_compile_definitions(thrift_python_cpp PRIVATE BOOST_NO_AUTO_PTR)
   target_compile_definitions(thrift_python_cpp PRIVATE THRIFT_NO_HTTP_CLIENT_CHANNEL)
@@ -414,6 +422,7 @@ if(thriftpy3)
       thriftcpp2
       thrift_python_cpp
       thrift_python_types_bindings
+      ${CMAKE_CURRENT_SOURCE_DIR}/setup.py
     WORKING_DIRECTORY ${_cybld}
   )
 

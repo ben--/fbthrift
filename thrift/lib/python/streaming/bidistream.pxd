@@ -40,7 +40,7 @@ cdef extern from "thrift/lib/cpp2/async/BiDiStream.h" namespace "::apache::thrif
         pass
 
 
-cdef extern from "thrift/lib/python/streaming/bidistream.h" namespace "::apache::thrift::python":
+cdef extern from "thrift/lib/python/streaming/BiDiStream.h" namespace "::apache::thrift::python":
     cResponseAndStreamTransformation[TResponse, TSinkChunk, TStreamChunk] \
     createResponseAndStreamTransformation[TResponse, TSinkChunk, TStreamChunk](
         TResponse response,

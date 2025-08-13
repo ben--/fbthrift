@@ -65,6 +65,7 @@ else:
         "thrift_python_cpp",
         "transport",
         "thriftmetadata",
+        "thrifttyperep",
     ] + [python_lib]
 
     common_options = {
@@ -186,8 +187,9 @@ else:
         Extension(
             "thrift.python.streaming.bidistream",
             sources=[
-                "thrift/python/streaming/bidistream.pyx"
-                "thrift/python/streaming/bidistream.cpp"
+                "thrift/python/streaming/bidistream.pyx",
+                "thrift/python/streaming/BiDiStream.cpp",
+                "thrift/python/streaming/Sink.cpp",
             ],
             **common_options,
         ),

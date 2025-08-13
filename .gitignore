@@ -1,5 +1,7 @@
 *~
 
+.jj
+
 # autoreconf artifacts
 Makefile.in
 /thrift/aclocal.m4

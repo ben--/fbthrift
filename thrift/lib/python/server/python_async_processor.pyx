@@ -80,12 +80,6 @@ from thrift.python.types cimport ServiceInterface as cServiceInterface
 from cpython.contextvars cimport PyContextVar_Set, PyContextVar_Reset
 
 
-# FIXME: Not sure if these should be here
-ctypedef unique_ptr[cIOBuf] UniqueIOBuf
-ctypedef cResponseAndServerStream[UniqueIOBuf, UniqueIOBuf] StreamResponse
-ctypedef cResponseAndSinkConsumer[UniqueIOBuf, UniqueIOBuf, UniqueIOBuf] SinkResponse
-ctypedef cResponseAndStreamTransformation[UniqueIOBuf, UniqueIOBuf, UniqueIOBuf] BiDiResponse
- 
 @cython.final
 cdef class ServerSink_IOBuf:
     @staticmethod
@@ -204,8 +198,6 @@ cdef class ResponseAndServerStream:
         return inst
 
 cdef class StreamTransformation_IOBuf:
-    cdef unique_ptr[cStreamTransformation[UniqueIOBuf, UniqueIOBuf]] _cBidi
-
     @staticmethod
     cdef _fbthrift_create(object bidi):
         cdef StreamTransformation_IOBuf inst = StreamTransformation_IOBuf.__new__(StreamTransformation_IOBuf)
@@ -213,8 +205,6 @@ cdef class StreamTransformation_IOBuf:
         return inst
 
 cdef class ResponseAndStreamTransformation:
-    cdef unique_ptr[BiDiResponse] _cResponseBidi
-
     @staticmethod
     cdef _fbthrift_create(object val, object bidi):
         cdef ResponseAndStreamTransformation inst = ResponseAndStreamTransformation.__new__(ResponseAndStreamTransformation)
@@ -227,8 +217,6 @@ cdef class ResponseAndStreamTransformation:
         return inst
 
 cdef class Promise_BiDi(Promise_Py):
-    cdef cFollyPromise[BiDiResponse]* _cPromise
-
     def __cinit__(self):
         self._cPromise = new cFollyPromise[BiDiResponse](cFollyPromise[BiDiResponse].makeEmpty())
 

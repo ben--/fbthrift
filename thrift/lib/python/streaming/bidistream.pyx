@@ -28,7 +28,7 @@ from thrift.python.streaming.python_user_exception cimport (
     PythonUserException,
 )
 from thrift.python.protocol cimport Protocol
-from thrift.python.streaming.sink cimport ServerSinkGenerator, ClientSink, cIOBufClientSink
+from thrift.python.streaming.sink cimport ServerSinkGenerator, ClientSink, cIOBufClientSink, cIOBufSinkGenerator
 from thrift.python.streaming.stream cimport ClientBufferedStream, cIOBufClientBufferedStream
 from thrift.python.streaming.py_promise cimport Promise_PyObject
 

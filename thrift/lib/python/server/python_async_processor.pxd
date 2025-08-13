@@ -38,6 +38,10 @@ from thrift.python.server_impl.async_processor cimport (
     AsyncProcessorFactory,
 )
 from thrift.python.std_libcpp cimport string_view
+from thrift.python.streaming.bidistream cimport (
+    cResponseAndStreamTransformation,
+    cStreamTransformation,
+)
 from thrift.python.streaming.py_promise cimport Promise_Py
 from thrift.python.streaming.python_user_exception cimport cPythonUserException
 from thrift.python.streaming.sink cimport (
@@ -67,6 +71,8 @@ cdef extern from "thrift/lib/python/server/PythonAsyncProcessor.h" namespace "::
         const string& serviceName,
         string_view functionName
     )
+ctypedef cResponseAndStreamTransformation[UniqueIOBuf, UniqueIOBuf, UniqueIOBuf] BiDiResponse
+ 
 
 cdef extern from "thrift/lib/python/server/PythonAsyncProcessorFactory.h" namespace "::apache::thrift::python":
     cdef cppclass cPythonAsyncProcessorFactory "::apache::thrift::python::PythonAsyncProcessorFactory"(cAsyncProcessorFactory):
@@ -91,6 +97,16 @@ cdef class PythonAsyncProcessorFactory(AsyncProcessorFactory):
 
     @staticmethod
     cdef PythonAsyncProcessorFactory create(cServiceInterface server)
+
+cdef class Promise_BiDi(Promise_Py):
+    cdef cFollyPromise[BiDiResponse]* _cPromise
+
+    cdef error_ta(Promise_BiDi self, cTApplicationException err)
+    cdef error_py(Promise_BiDi self, cPythonUserException err)
+    cdef complete(Promise_BiDi self, object pyobj)
+
+    @staticmethod
+    cdef create(cFollyPromise[BiDiResponse] promise)
 
 cdef class Promise_cFollyUnit(Promise_Py):
     cdef cFollyPromise[cFollyUnit]* cPromise
@@ -134,6 +150,12 @@ cdef class ResponseAndSinkConsumer:
     @staticmethod
     cdef _fbthrift_create(object val, object sink)
 
+cdef class ResponseAndStreamTransformation:
+    cdef unique_ptr[BiDiResponse] _cResponseBidi
+
+    @staticmethod
+    cdef _fbthrift_create(object val, object bidi)
+
 @cython.final
 cdef class ServerSink_IOBuf:
     cdef unique_ptr[cSinkConsumer[UniqueIOBuf, UniqueIOBuf]] _cSink
@@ -146,3 +168,9 @@ cdef class ServerStream_IOBuf(ServerStream):
 
     @staticmethod
     cdef _fbthrift_create(object stream)
+
+cdef class StreamTransformation_IOBuf:
+    cdef unique_ptr[cStreamTransformation[UniqueIOBuf, UniqueIOBuf]] _cBidi
+
+    @staticmethod
+    cdef _fbthrift_create(object bidi)
