@@ -24,8 +24,8 @@ from thrift.python.serializer import serialize_iobuf
 
 from thrift.py3.server import ThriftServer
 from thrift.py3.stream import ServerStream
-from thrift.python.server_impl.request_context cimport Cpp2RequestContext
-from thrift.python.server_impl.request_context import (
+from thrift.python.server.request_context cimport Cpp2RequestContext
+from thrift.python.server.request_context import (
     RequestContext,
     SocketAddress,
     get_context,
@@ -33,4 +33,4 @@ from thrift.python.server_impl.request_context import (
 from thrift.python.streaming.python_user_exception import (
     PythonUserException,
 )
-from thrift.python.server_impl.interceptor.server_module import PythonServerModule
+from thrift.python.server.interceptor.server_module import PythonServerModule

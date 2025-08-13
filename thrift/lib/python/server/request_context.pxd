@@ -23,7 +23,7 @@ from libcpp.utility cimport pair
 from folly.iobuf cimport cIOBuf
 from thrift.py3.std_libcpp cimport milliseconds, string_view
 from thrift.python.common cimport cPriority
-from thrift.python.server_impl.event_handler cimport cfollySocketAddress
+from thrift.python.server.event_handler cimport cfollySocketAddress
 from thrift.python.common cimport Headers
 
 cdef extern from "folly/container/F14Map.h" namespace "folly":

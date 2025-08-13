@@ -21,7 +21,7 @@ from libcpp.vector cimport vector as cvector
 from folly.iobuf cimport cIOBuf
 from thrift.python.protocol cimport RpcKind
 from thrift.python.types cimport ServiceInterface as cServiceInterface
-from thrift.python.server_impl.async_processor cimport (
+from thrift.python.server.async_processor cimport (
     cAsyncProcessorFactory,
     AsyncProcessorFactory,
 )

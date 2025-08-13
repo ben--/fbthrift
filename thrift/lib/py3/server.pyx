@@ -31,7 +31,7 @@ import os
 from enum import Enum
 from thrift.python.common import Priority, Headers # noqa
 from thrift.python.types cimport ServiceInterface as PythonServiceInterface
-from thrift.python.server_impl.event_handler cimport (
+from thrift.python.server.event_handler cimport (
     SSLPolicy__DISABLED,
     SSLPolicy__PERMITTED,
     SSLPolicy__REQUIRED,
@@ -39,10 +39,10 @@ from thrift.python.server_impl.event_handler cimport (
     makeFromPath,
     object_partial,
 )
-from thrift.python.server_impl.async_processor import AsyncProcessorFactory as AsyncProcessorFactory_
-from thrift.python.server_impl.async_processor cimport EmptyAsyncProcessorFactory
-from thrift.python.server_impl.python_async_processor cimport PythonAsyncProcessorFactory
-from thrift.python.server_impl.request_context import ( # noqa
+from thrift.python.server.async_processor import AsyncProcessorFactory as AsyncProcessorFactory_
+from thrift.python.server.async_processor cimport EmptyAsyncProcessorFactory
+from thrift.python.server.python_async_processor cimport PythonAsyncProcessorFactory
+from thrift.python.server.request_context import ( # noqa
     ClientMetadata,
     ConnectionContext,
     ReadHeaders,
@@ -51,8 +51,8 @@ from thrift.python.server_impl.request_context import ( # noqa
     WriteHeaders,
     get_context,
 )
-from thrift.python.server_impl.request_context cimport handleAddressCallback
-from thrift.python.server_impl.interceptor.server_module cimport PythonServerModule
+from thrift.python.server.request_context cimport handleAddressCallback
+from thrift.python.server.interceptor.server_module cimport PythonServerModule
 
 AsyncProcessorFactory = AsyncProcessorFactory_
 

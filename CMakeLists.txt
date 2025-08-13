@@ -91,7 +91,7 @@ set(
 set_property(CACHE thriftpy PROPERTY STRINGS ON OFF AUTO)
 option(thriftpy3
   "Include thrift-py3 library and extensions in the build, requires Cython"
-  OFF
+  ON
 )
 
 find_package(folly CONFIG REQUIRED)

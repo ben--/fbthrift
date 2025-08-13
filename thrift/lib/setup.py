@@ -17,14 +17,20 @@
 # Cython requires source files in a specific structure, the structure is
 # created as tree of links to the real source files.
 
+import os
 import sys
 
 import Cython
 from Cython.Build import cythonize
 from Cython.Compiler import Options
+import pkg_resources
 from setuptools import Extension, setup
 
 Options.fast_fail = True
+
+def pkg_dir(pkg_name: str) -> str:
+    pkg_res = pkg_resources.require(pkg_name)
+    return pkg_res[0].location
 
 if "--api-only" in sys.argv:
     # Invoke cython compiler directly instead of calling cythonize().
@@ -34,6 +40,7 @@ if "--api-only" in sys.argv:
         "thrift/python/_types.pyx",
         full_module_name="thrift.python.types",
         cplus=True,
+        include_path=[pkg_dir("folly")],
         language_level=3,
     )
     Cython.Compiler.Main.compile(
@@ -42,16 +49,17 @@ if "--api-only" in sys.argv:
         cplus=True,
         language_level=3,
     )
-    Cython.Compiler.Main.compile(
-        "thrift/python/_util.pyx",
-        full_module_name="thrift.python.util",
-        cplus=True,
-        language_level=3,
-    )
+    # Cython.Compiler.Main.compile(
+    #     "thrift/python/_util.pyx",
+    #     full_module_name="thrift.python.util",
+    #     cplus=True,
+    #     language_level=3,
+    # )
     Cython.Compiler.Main.compile(
         "thrift/py3/_stream.pyx",
         full_module_name="thrift.py3.stream",
         cplus=True,
+        include_path=[pkg_dir("folly")],
         language_level=3,
     )
 else:
@@ -82,6 +90,7 @@ else:
     common_options = {
         "language": "c++",
         "libraries": libs,
+
     }
 
     exts = [
@@ -187,7 +196,7 @@ else:
             **common_options,
         ),
         Extension(
-            "thrift.python.server",
+            "thrift.python.server_impl",
             sources=[
                 "thrift/python/server.pyx",
                 "thrift/python/server/PythonAsyncProcessor.cpp",
@@ -197,21 +206,21 @@ else:
             define_macros=[("__PYX_ENUM_CLASS_DECL", "")],
             **common_options,
         ),
-        Extension(
-            "thrift.python.stream",
-            sources=["thrift/python/stream.pyx"],
-            **common_options,
-        ),
+        # Extension(
+        #     "thrift.python.stream",
+        #     sources=["thrift/python/stream.pyx"],
+        #     **common_options,
+        # ),
         Extension(
             "thrift.python.types",
             sources=["thrift/python/_types.pyx"],
             **common_options,
         ),
-        Extension(
-            "thrift.python.util",
-            sources=["thrift/python/_util.pyx"],
-            **common_options,
-        ),
+        # Extension(
+        #     "thrift.python.util",
+        #     sources=["thrift/python/_util.pyx"],
+        #     **common_options,
+        # ),
         # thrift.py3 extension modules
         Extension(
             "thrift.py3.common",
@@ -258,5 +267,9 @@ else:
         package_data={"": ["*.pxd", "*.h"]},
         setup_requires=["cython"],
         zip_safe=False,
-        ext_modules=cythonize(exts, compiler_directives={"language_level": 3}),
+        ext_modules=cythonize(
+            exts,
+            include_path=[pkg_dir("folly")],
+            compiler_directives={"language_level": 3}
+        ),
     )

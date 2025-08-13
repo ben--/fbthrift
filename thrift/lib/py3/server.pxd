@@ -20,7 +20,7 @@ from libcpp.string cimport string
 from folly.iobuf cimport cIOBuf
 from folly cimport cFollyExecutor
 from thrift.py3.std_libcpp cimport milliseconds, seconds
-from thrift.python.server_impl.event_handler cimport (
+from thrift.python.server.event_handler cimport (
     PythonServerEventHandler,
     cBaseThriftServerMetadata,
     cIsOverloadedFunc,
@@ -29,11 +29,11 @@ from thrift.python.server_impl.event_handler cimport (
     cTransportRoutingHandler,
 )
 from thrift.python.types cimport ServiceInterface as PythonServiceInterface
-from thrift.python.server_impl.async_processor cimport (
+from thrift.python.server.async_processor cimport (
     cAsyncProcessorFactory,
     AsyncProcessorFactory as Py3AsyncProcessorFactory,
 )
-from thrift.python.server_impl.interceptor.server_module cimport cServerModule
+from thrift.python.server.interceptor.server_module cimport cServerModule
 
 
 cdef extern from "thrift/lib/cpp2/server/StatusServerInterface.h" \
