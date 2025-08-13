@@ -45,6 +45,43 @@ install(
   DESTINATION ${CMAKE_INSTALL_DIR}
 )
 
+# Generate a pkg-config file so that downstream projects that don't use
+# CMake can depend on fbthrift using pkg-config.
+include(GenPkgConfig)
+
+add_library(fbthrift_deps INTERFACE)
+list(REMOVE_DUPLICATES FBTHRIFT_INCLUDE_DIRECTORIES)
+target_include_directories(fbthrift_deps INTERFACE ${FBTHRIFT_INCLUDE_DIRECTORIES})
+target_link_libraries(fbthrift_deps INTERFACE ${FBTHRIFT_LINK_LIBRARIES})
+
+gen_pkgconfig_vars(FBTHRIFT_PKGCONFIG fbthrift_deps)
+target_include_directories(fbthrift_deps
+  BEFORE
+  INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+)
+target_include_directories(fbthrift_deps
+  INTERFACE
+    $<INSTALL_INTERFACE:include>
+)
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/pkgconfig/libfbthrift.pc.in
+  ${CMAKE_CURRENT_BINARY_DIR}/libfbthrift.pc.gen
+  @ONLY
+)
+file(
+  GENERATE
+  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/libfbthrift.pc
+  INPUT ${CMAKE_CURRENT_BINARY_DIR}/libfbthrift.pc.gen
+  ${fbthrift_deps}
+)
+install(
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/libfbthrift.pc
+  DESTINATION ${LIB_INSTALL_DIR}/pkgconfig
+  COMPONENT dev
+)
+
 install(
   DIRECTORY annotation ${CMAKE_CURRENT_SOURCE_DIR}/annotation
   DESTINATION include/thrift

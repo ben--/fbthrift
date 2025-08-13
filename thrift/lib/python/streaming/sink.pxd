@@ -83,6 +83,16 @@ cdef class ClientSink:
 cdef class ResponseAndClientSink:
     pass
 
+cdef class ServerSinkGenerator:
+    cdef cIOBufSinkGenerator _cpp_gen 
+    cdef cFollyExecutor* _executor
+
+    @staticmethod
+    cdef _fbthrift_create(
+        cIOBufSinkGenerator cpp_gen,
+        cFollyExecutor* executor,
+    )
+
 cdef api void cancelAsyncGenerator(object generator)
 
 cdef api int invoke_server_sink_callback(

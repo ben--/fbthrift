@@ -126,6 +126,7 @@ add_library(
   sema/check_initializer.cc
   sema/check_map_keys.cc
   sema/explicit_include_validator.cc
+  sema/resolution_mismatch.cc
   sema/scope_validator.cc
   sema/sema.cc
   sema/sema_context.cc

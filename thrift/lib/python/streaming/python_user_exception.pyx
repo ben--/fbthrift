@@ -17,7 +17,8 @@ from libcpp.string cimport string
 from libcpp.utility cimport move as cmove
 from libcpp.memory cimport make_unique
 
-from folly.iobuf cimport from_unique_ptr
+from folly.iobuf cimport IOBuf, cIOBuf, from_unique_ptr
+from thrift.python.streaming.python_user_exception cimport extractBufFromPythonUserException
 
 
 cdef class PythonUserException(Exception):

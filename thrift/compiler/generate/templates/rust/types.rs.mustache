@@ -190,7 +190,7 @@ pub mod __constructors {
 pub mod __dependencies {
     {{#program:direct_dependencies}}
     #[doc(hidden)]
-    #[deprecated{{#dependency:label}} = "Please use `{{.}}` directly"{{/dependency:label}}]
+    // #[deprecated{{#dependency:label}} = "Please use `{{.}}` directly"{{/dependency:label}}]
     pub extern crate {{dependency:name}};
     {{/program:direct_dependencies}}
 }

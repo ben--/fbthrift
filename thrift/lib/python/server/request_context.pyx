@@ -16,7 +16,7 @@ from cython.operator cimport dereference as deref
 from libc.string cimport const_uchar
 
 from folly.iobuf cimport from_unique_ptr as create_IOBuf
-from thrift.python.server_impl.event_handler cimport getRequestId
+from thrift.python.server.event_handler cimport getRequestId
 from thrift.python.common cimport Priority_to_cpp, Headers
 
 import collections

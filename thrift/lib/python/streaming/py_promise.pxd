@@ -26,7 +26,7 @@ cdef class Promise_Py:
     cdef complete(Promise_Py self, object pyobj)
 
 cdef class Promise_Optional_IOBuf(Promise_Py):
-    cdef cFollyPromise[optional[unique_ptr[cIOBuf]]]* cPromise
+    cdef cFollyPromise[unique_ptr[cIOBuf]]* cPromise
 
     cdef error_ta(Promise_Optional_IOBuf self, cTApplicationException err)
     cdef error_py(Promise_Optional_IOBuf self, cPythonUserException err)
@@ -36,8 +36,8 @@ cdef class Promise_Optional_IOBuf(Promise_Py):
     cdef create(cFollyPromise[optional[unique_ptr[cIOBuf]]] promise)
 
 cdef class Promise_IOBuf(Promise_Py):
-    cdef cFollyPromise[unique_ptr[cIOBuf]]* cPromise
-
+    cdef cFollyPromise[optional[unique_ptr[cIOBuf]]]* cPromise
+    
     cdef error_ta(Promise_IOBuf self, cTApplicationException err)
     cdef error_py(Promise_IOBuf self, cPythonUserException err)
     cdef complete(Promise_IOBuf self, object pyobj)

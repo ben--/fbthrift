@@ -73,7 +73,7 @@ pub use {{program:types}} as types;
 pub mod __dependencies {
     {{#program:direct_dependencies}}
     #[doc(hidden)]
-    #[deprecated{{#dependency:label}} = "Please use `{{.}}-services` directly"{{/dependency:label}}]
+    // #[deprecated{{#dependency:label}} = "Please use `{{.}}-services` directly"{{/dependency:label}}]
     pub extern crate {{dependency:name_unmangled}}_services;
     {{/program:direct_dependencies}}
 }

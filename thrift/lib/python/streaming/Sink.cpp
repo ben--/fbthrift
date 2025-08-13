@@ -19,7 +19,7 @@
 #include <folly/Portability.h>
 #include <folly/python/error.h>
 #include <thrift/lib/python/streaming/Sink.h>
-#include <thrift/lib/python/streaming/sink_api.h> // @manual
+#include <thrift/python/streaming/sink_api.h> // @manual
 
 namespace apache::thrift::python {
 

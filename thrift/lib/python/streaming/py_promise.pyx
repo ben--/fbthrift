@@ -14,19 +14,28 @@
 
 from cpython cimport bool as pbool
 from cython.operator cimport dereference
+from libcpp.memory cimport unique_ptr
+from libcpp.optional cimport optional
 from libcpp.utility cimport move as cmove
 
 import asyncio
 import traceback
 import sys
 
-from folly.iobuf cimport IOBuf
+from folly cimport cFollyPromise
+from folly.iobuf cimport (
+    IOBuf,
+    cIOBuf,
+)
 from thrift.python.exceptions cimport (
     ApplicationError,
+    cTApplicationException,
     cTApplicationExceptionType__UNKNOWN,
 )
-from thrift.python.streaming.python_user_exception cimport PythonUserException
-
+from thrift.python.streaming.python_user_exception cimport (
+    PythonUserException,
+    cPythonUserException,
+)
 
 cdef class Promise_Py:
     cdef error_ta(Promise_Py self, cTApplicationException err):
@@ -41,8 +50,11 @@ cdef class Promise_Py:
 # A promise useful for returning a single std::unique_ptr<folly::IOBuf>
 # such as standard request response, or a sink final response.
 cdef class Promise_IOBuf(Promise_Py):
+    cdef cFollyPromise[unique_ptr[cIOBuf]]* cPromise
+
     def __cinit__(self):
         self.cPromise = new cFollyPromise[unique_ptr[cIOBuf]](cFollyPromise[unique_ptr[cIOBuf]].makeEmpty())
+        # self.cPromise = cFollyPromise[unique_ptr[cIOBuf]].makeEmpty()
 
     def __dealloc__(self):
         del self.cPromise
@@ -66,6 +78,8 @@ cdef class Promise_IOBuf(Promise_Py):
 # such as an element in an python async generator used as input to client sink
 # or a server stream, where std::nullopt represents the end of the generator.
 cdef class Promise_Optional_IOBuf(Promise_Py):
+    cdef cFollyPromise[optional[unique_ptr[cIOBuf]]]* cPromise
+
     def __cinit__(self):
         self.cPromise = new cFollyPromise[optional[unique_ptr[cIOBuf]]](
             cFollyPromise[optional[unique_ptr[cIOBuf]]].makeEmpty()
@@ -145,7 +159,7 @@ cdef void genNextStreamValue(object generator, cFollyPromise[optional[unique_ptr
         )
     )
 
-cdef void genNextSinkValue(object generator, cFollyPromise[optional[unique_ptr[cIOBuf]]] promise) noexcept:
+cdef api void genNextSinkValue(object generator, cFollyPromise[optional[unique_ptr[cIOBuf]]] promise) noexcept:
     cdef Promise_Optional_IOBuf __promise = Promise_Optional_IOBuf.create(cmove(promise))
     asyncio.get_event_loop().create_task(
         runGenerator(
