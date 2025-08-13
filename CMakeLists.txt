@@ -59,6 +59,7 @@ set(CMAKE_MODULE_PATH
 # Find required dependencies.
 find_package(Boost REQUIRED filesystem)
 find_package(fmt CONFIG REQUIRED)
+find_package(folly CONFIG REQUIRED)
 find_package(OpenSSL REQUIRED)
 
 if(NOT CMAKE_CXX_STANDARD)
@@ -93,8 +94,6 @@ option(thriftpy3
   "Include thrift-py3 library and extensions in the build, requires Cython"
   OFF
 )
-
-find_package(folly CONFIG REQUIRED)
 
 # Find required dependencies for the Thrift compiler.
 if (THRIFT_COMPILER_ONLY OR build_all)
@@ -166,4 +165,28 @@ function(thrift_gtest tname srcfile)
   gtest_add_tests("${tname}-t" "" ${srcfile})
 endfunction(thrift_gtest)
 
+include(CMakePackageConfigHelpers)
+configure_package_config_file(
+  CMake/fbthrift-config.cmake.in
+  fbthrift-config.cmake
+  INSTALL_DESTINATION ${CMAKE_INSTALL_DIR}
+  PATH_VARS
+    INCLUDE_INSTALL_DIR
+    CMAKE_INSTALL_DIR
+)
+install(
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/fbthrift-config.cmake
+  DESTINATION ${CMAKE_INSTALL_DIR}
+  COMPONENT dev
+)
+install(
+  EXPORT folly
+  DESTINATION ${CMAKE_INSTALL_DIR}
+  NAMESPACE FBThrift::
+  FILE fbthrift-targets.cmake
+  COMPONENT dev
+)
+
+
 add_subdirectory(thrift)
+
