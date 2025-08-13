@@ -67,3 +67,4 @@ cdef class Promise_PyObject(Promise_Py):
 cdef api void genNextStreamValue(object generator, cFollyPromise[optional[unique_ptr[cIOBuf]]] promise) noexcept
 
 cdef void genNextSinkValue(object generator, cFollyPromise[optional[unique_ptr[cIOBuf]]] promise) noexcept
+cdef api void genNextSinkValue(object generator, cFollyPromise[optional[unique_ptr[cIOBuf]]] promise) noexcept
