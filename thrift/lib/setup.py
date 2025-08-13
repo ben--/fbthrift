@@ -184,6 +184,14 @@ else:
             **common_options,
         ),
         Extension(
+            "thrift.python.streaming.bidistream",
+            sources=[
+                "thrift/python/streaming/bidistream.pyx"
+                "thrift/python/streaming/bidistream.cpp"
+            ],
+            **common_options,
+        ),
+        Extension(
             "thrift.python.streaming.py_promise",
             sources=["thrift/python/streaming/py_promise.pyx"],
             **common_options,
