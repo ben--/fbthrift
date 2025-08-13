@@ -287,7 +287,17 @@ if(thriftpy3)
   set(_folly_site_packages "${CMAKE_INSTALL_PREFIX}/../folly/lib/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages")
   # FIXME: For some reason, FOLLY_VERSION is not defined
   set(_folly_version "0.0.1")
-  set(_folly_PYTHONPATH "${_folly_site_packages}/folly-${_folly_version}-py${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}-linux-x86_64.egg")
+  # Use glob to find folly egg regardless of platform (macOS vs Linux, x86_64 vs arm64)
+  file(GLOB _folly_eggs "${_folly_site_packages}/folly-${_folly_version}-py${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}-*.egg")
+  if(_folly_eggs)
+    list(GET _folly_eggs 0 _folly_egg_path)
+    set(_folly_PYTHONPATH "${_folly_egg_path}")
+  else()
+    # Fall back to hardcoded path for backward compatibility
+    set(_folly_PYTHONPATH "${_folly_site_packages}/folly-${_folly_version}-py${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}-linux-x86_64.egg")
+  endif()
+  # Also add FOLLY_INCLUDE_DIR where folly installs .pxd files
+  set(_folly_PYTHONPATH "${FOLLY_INCLUDE_DIR}:${_folly_PYTHONPATH}")
   
   add_custom_command(TARGET thrift_python_types_bindings
     COMMAND ${CMAKE_COMMAND} -E env
