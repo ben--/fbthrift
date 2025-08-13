@@ -12,20 +12,40 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+cimport cython
 from cpython.ref cimport PyObject
+from folly cimport cFollyPromise, cFollyUnit
 from libcpp.memory cimport unique_ptr
 from libcpp.string cimport string
 from libcpp.map cimport map as cmap
 from libcpp.pair cimport pair
 from libcpp.vector cimport vector as cvector
 from folly.iobuf cimport cIOBuf
+from thrift.py3.stream cimport (
+    cResponseAndServerStream,
+    cServerStream,
+    ServerStream,
+)
+from thrift.python.exceptions cimport (
+    cException,
+    cTApplicationException,
+)
 from thrift.python.protocol cimport RpcKind
 from thrift.python.types cimport ServiceInterface as cServiceInterface
-from thrift.python.server_impl.async_processor cimport (
+from thrift.python.server.async_processor cimport (
     cAsyncProcessorFactory,
     AsyncProcessorFactory,
 )
-from thrift.python.exceptions cimport cException
+from thrift.python.streaming.py_promise cimport (
+    Promise_Py,
+)
+from thrift.python.streaming.python_user_exception cimport (
+    cPythonUserException,
+)
+from thrift.python.streaming.sink cimport (
+    cResponseAndSinkConsumer,
+    cSinkConsumer,
+)
 from libcpp.memory cimport shared_ptr
 from libcpp cimport bool as cbool
 from folly.executor cimport cAsyncioExecutor
@@ -59,3 +79,63 @@ cdef class PythonAsyncProcessorFactory(AsyncProcessorFactory):
 
     @staticmethod
     cdef PythonAsyncProcessorFactory create(cServiceInterface server)
+
+ctypedef unique_ptr[cIOBuf] UniqueIOBuf
+ctypedef cResponseAndSinkConsumer[UniqueIOBuf, UniqueIOBuf, UniqueIOBuf] SinkResponse
+ctypedef cResponseAndServerStream[UniqueIOBuf, UniqueIOBuf] StreamResponse
+
+@cython.final
+cdef class ServerSink_IOBuf:
+    cdef unique_ptr[cSinkConsumer[UniqueIOBuf, UniqueIOBuf]] _cSink
+
+    @staticmethod
+    cdef _fbthrift_create(object sink_callback)
+
+cdef class ResponseAndSinkConsumer:
+    cdef unique_ptr[SinkResponse] _cResponseSink
+
+    @staticmethod
+    cdef _fbthrift_create(object val, object sink)
+
+cdef class Promise_Sink(Promise_Py):
+    cdef cFollyPromise[SinkResponse]* _cPromise
+
+    cdef error_ta(Promise_Sink self, cTApplicationException err)
+    cdef error_py(Promise_Sink self, cPythonUserException err)
+    cdef complete(Promise_Sink self, object pyobj)
+
+    @staticmethod
+    cdef create(cFollyPromise[SinkResponse] promise)
+
+cdef class Promise_Stream(Promise_Py):
+    cdef cFollyPromise[StreamResponse]* cPromise
+
+    cdef error_ta(Promise_Stream self, cTApplicationException err)
+    cdef error_py(Promise_Stream self, cPythonUserException err)
+    cdef complete(Promise_Stream self, object pyobj)
+
+    @staticmethod
+    cdef create(cFollyPromise[StreamResponse] cPromise)
+
+cdef class Promise_cFollyUnit(Promise_Py):
+    cdef cFollyPromise[cFollyUnit]* cPromise
+
+    cdef error_ta(Promise_cFollyUnit self, cTApplicationException err)
+    cdef error_py(Promise_cFollyUnit self, cPythonUserException err)
+    cdef complete(Promise_cFollyUnit self, object _)
+
+    @staticmethod
+    cdef create(cFollyPromise[cFollyUnit] cPromise)
+
+
+cdef class ServerStream_IOBuf(ServerStream):
+    cdef unique_ptr[cServerStream[UniqueIOBuf]] cStream
+
+    @staticmethod
+    cdef _fbthrift_create(object stream)
+
+cdef class ResponseAndServerStream:
+    cdef unique_ptr[StreamResponse] cResponseStream
+
+    @staticmethod
+    cdef _fbthrift_create(object val, object stream)

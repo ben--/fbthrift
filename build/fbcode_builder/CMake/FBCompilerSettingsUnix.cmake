@@ -6,4 +6,5 @@
 # to these shared compiler settings in order to avoid accidentally
 # breaking a build in another project!
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fcoroutines")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -fcoroutines")

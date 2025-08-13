@@ -92,7 +92,7 @@ set(
 set_property(CACHE thriftpy PROPERTY STRINGS ON OFF AUTO)
 option(thriftpy3
   "Include thrift-py3 library and extensions in the build, requires Cython"
-  OFF
+  ON
 )
 
 # Find required dependencies for the Thrift compiler.
@@ -165,27 +165,39 @@ function(thrift_gtest tname srcfile)
   gtest_add_tests("${tname}-t" "" ${srcfile})
 endfunction(thrift_gtest)
 
-include(CMakePackageConfigHelpers)
-configure_package_config_file(
-  CMake/fbthrift-config.cmake.in
-  fbthrift-config.cmake
-  INSTALL_DESTINATION ${CMAKE_INSTALL_DIR}
-  PATH_VARS
-    INCLUDE_INSTALL_DIR
-    CMAKE_INSTALL_DIR
-)
-install(
-  FILES ${CMAKE_CURRENT_BINARY_DIR}/fbthrift-config.cmake
-  DESTINATION ${CMAKE_INSTALL_DIR}
-  COMPONENT dev
-)
-install(
-  EXPORT folly
-  DESTINATION ${CMAKE_INSTALL_DIR}
-  NAMESPACE FBThrift::
-  FILE fbthrift-targets.cmake
-  COMPONENT dev
-)
+# ########################################################################
+# # pkg-config
+# include(GenPkgConfig)
+
+# configure_file(
+#   ${CMAKE_CURRENT_SOURCE_DIR}/CMake/libfolly.pc.in
+#   ${CMAKE_CURRENT_BINARY_DIR}/libfolly.pc.gen
+#   @ONLY
+# )
+
+# ########################################################################
+# # CMake package config
+# include(CMakePackageConfigHelpers)
+# configure_package_config_file(
+#   CMake/fbthrift-config.cmake.in
+#   fbthrift-config.cmake
+#   INSTALL_DESTINATION ${CMAKE_INSTALL_DIR}
+#   PATH_VARS
+#     INCLUDE_INSTALL_DIR
+#     CMAKE_INSTALL_DIR
+# )
+# install(
+#   FILES ${CMAKE_CURRENT_BINARY_DIR}/fbthrift-config.cmake
+#   DESTINATION ${CMAKE_INSTALL_DIR}
+#   COMPONENT dev
+# )
+# install(
+#   EXPORT thrift
+#   DESTINATION ${CMAKE_INSTALL_DIR}
+#   NAMESPACE FBThrift::
+#   FILE fbthrift-targets.cmake
+#   COMPONENT dev
+# )
 
 
 add_subdirectory(thrift)
