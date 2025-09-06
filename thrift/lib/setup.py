@@ -49,24 +49,12 @@ if "--api-only" in sys.argv:
         cplus=True,
         language_level=3,
     )
-    # Cython.Compiler.Main.compile(
-    #     "thrift/python/streaming/py_promise.pyx",
-    #     full_module_name="thrift.python.streaming.py_promise",
-    #     cplus=True,
-    #     language_level=3,
-    # )
     Cython.Compiler.Main.compile(
         "thrift/python/streaming/sink.pyx",
         full_module_name="thrift.python.streaming.sink",
         cplus=True,
         language_level=3,
     )
-    # Cython.Compiler.Main.compile(
-    #     "thrift/python/_util.pyx",
-    #     full_module_name="thrift.python.util",
-    #     cplus=True,
-    #     language_level=3,
-    # )
     Cython.Compiler.Main.compile(
         "thrift/py3/_stream.pyx",
         full_module_name="thrift.py3.stream",
@@ -254,21 +242,11 @@ else:
             ],
             **common_options,
         ),
-        # Extension(
-        #     "thrift.python.stream",
-        #     sources=["thrift/python/stream.pyx"],
-        #     **common_options,
-        # ),
         Extension(
             "thrift.python.types",
             sources=["thrift/python/_types.pyx"],
             **common_options,
         ),
-        # Extension(
-        #     "thrift.python.util",
-        #     sources=["thrift/python/_util.pyx"],
-        #     **common_options,
-        # ),
         # thrift.py3 extension modules
         Extension(
             "thrift.py3.common",

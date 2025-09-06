@@ -1,22 +1,13 @@
 # Copyright (c) Meta Platforms, Inc. and affiliates.
 
 function(_write_manifest MANIFEST_FILE PY_TARGET EGG_NAME)
-  # set(tmp_manifest "${manifest_path}.tmp")
-
-  message(STATUS "### _write_manifest:0")
   set(egg_glob "${CMAKE_INSTALL_PREFIX}/lib/python*/site-packages/${EGG_NAME}-*.egg")
-  message(STATUS "### _write_manifest:1 egg_glob = ${egg_glob}")
 
   add_dependencies("${PY_TARGET}" "${MANIFEST_FILE}")
-  # add_dependencies("${PY_TARGET}" folly_python_cpp)
-  # add_dependencies("${PY_TARGET}" "${MANIFEST_FILE}")
-  # add_dependencies("${MANIFEST_FILE}" folly_python_cpp)
   set("${PY_TARGET}" INTERFACE_INCLUDE_DIRECTORIES ${MANIFEST_FILE})
   set("${PY_TARGET}" INTERFACE_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib")
 
-  message(STATUS "### _write_manifest:2")
   set(_install_code [[
-    message(STATUS "### _write_manifest:3 glob = @egg_glob@")
     file(GLOB _egg_root @egg_glob@)
     file(GLOB_RECURSE _egg_files 
       LIST_DIRECTORIES false
@@ -29,37 +20,25 @@ function(_write_manifest MANIFEST_FILE PY_TARGET EGG_NAME)
     set(_manifest_contents "FBPY_MANIFEST 1\n")
 
     foreach(_absfile IN LISTS _egg_files)
-      message(STATUS "### _write_manifest:3.1 ${_absfile}")
       cmake_path(RELATIVE_PATH _absfile BASE_DIRECTORY ${_egg_root} OUTPUT_VARIABLE _egg_relative)
-      message(STATUS "### _write_manifest:3.2 ${_egg_relative}")
 
       cmake_path(RELATIVE_PATH _absfile BASE_DIRECTORY ${CMAKE_INSTALL_PREFIX} OUTPUT_VARIABLE _manifest_relative)
-      message(STATUS "### _write_manifest:3.3 ${_manifest_relative}")
       set("${PY_TARGET}" INTERFACE_SOURCES $_absfile)
-      message(STATUS "### _write_manifest:3.4 ${_manifest_relative}")
       if(NOT ${_egg_relative} MATCHES "^EGG-INFO/")
-        message(STATUS "### _write_manifest:3.5 including in manifest")
         string(APPEND _manifest_contents "${_manifest_relative} :: ${_egg_relative}\n")
       endif()
     endforeach()
 
-    message(STATUS "### _write_manifest:3.-1")
     file(WRITE ${_manifest_path} ${_manifest_contents})
   ]])
-  message(STATUS "### _write_manifest:4")
   string(CONFIGURE "${_install_code}" _install_code @ONLY)
-  message(STATUS "### _write_manifest:5 writing to ${MANIFEST_FILE}")
   install(CODE "${_install_code}" DESTINATION ${MANIFEST_FILE} EXPORT)
-  message(STATUS "### _write_manifest:-1")
 endfunction()
 
 function(wrap_non_fb_python_library TARGET EGG_NAME)
-  message(STATUS "#### wrap_non_fb_python_library:0 ${TARGET} ${EGG_NAME}")
   set(py_lib "${TARGET}.py_lib")
   add_library("${py_lib}" INTERFACE)
   install(TARGETS "${py_lib}" EXPORT)
-  # add_dependencies("${py_lib}" "${TARGET}")
-  # target_link_libraries("${py_lib}" INTERFACE "${TARGET}")
 
   set(manifest_filename "${TARGET}.manifest")
   set(build_manifest "${CMAKE_CURRENT_BINARY_DIR}/${manifest_filename}")

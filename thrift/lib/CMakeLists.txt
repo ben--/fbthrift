@@ -246,29 +246,15 @@ if(thriftpy3)
       thriftcpp2
     WORKING_DIRECTORY ${_cybld}
   )
-  message(STATUS "#### fbthrift.cmake.5")
-  message(STATUS "#### fbthrift.cmake.6 INSTALL_DIR=${INSTALL_DIR}")
-  message(STATUS "#### fbthrift.cmake.6 py_install_dir=${py_install_dir}")
-  message(STATUS "#### fbthrift.cmake.6 CMAKE_CURRENT_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}")
-  message(STATUS "#### fbthrift.cmake.6 CMAKE_BINARY_DIR=${CMAKE_BINARY_DIR}")
-  message(STATUS "#### fbthrift.cmake.6 CMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}")
 
   set(FOLLY_PY_SITE
     "${CMAKE_INSTALL_PREFIX}/../folly/lib/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages")
-  message(STATUS "#### fbthrift.cmake.7 FOLLY_PY_SITE=${FOLLY_PY_SITE}")
 
   add_custom_command(TARGET thrift_python_types_bindings
-    COMMENT "#### fbthfit.cmake.8"
-    # COMMAND echo ${CMAKE_COMMAND} -E env
-    #   "CFLAGS=${CMAKE_C_FLAGS}"
-    #   "CXXFLAGS=${CMAKE_CXX_FLAGS}"
-    #   "CXX=${CMAKE_CXX_COMPILER}"
-    #   python3 ${CMAKE_CURRENT_SOURCE_DIR}/setup.py -v --api-only
     COMMAND ${CMAKE_COMMAND} -E env
       "CFLAGS=${CMAKE_C_FLAGS} -std=c++20 -fcoroutines -fPIC"
       "CXXFLAGS=${CMAKE_CXX_FLAGS} -std=c++20 -fcoroutines -fPIC"
       "CXX=${CMAKE_CXX_COMPILER}"
-      # "PYTHONPATH=$<TARGET_PROPERTY:Folly::folly_python_cpp,INTERFACE_INCLUDE_DIRECTORIES>"
       "PYTHONPATH=${_cybld}:${FOLLY_PY_SITE}:$ENV{PYTHONPATH}"
       python3 ${CMAKE_CURRENT_SOURCE_DIR}/setup.py -v --api-only
     BYPRODUCTS
@@ -337,7 +323,6 @@ if(thriftpy3)
       python/streaming/PythonUserException.cpp
       python/streaming/StreamElementEncoder.cpp
       python/types.cpp
-      # python/util.cpp
       python/Serializer.cpp
       py3/stream.cpp
   )
