@@ -18,12 +18,14 @@ from cpython.ref cimport PyObject
 
 from folly cimport cFollyPromise
 from folly.iobuf cimport cIOBuf, IOBuf
+
 from thrift.python.exceptions cimport cTApplicationException
 from thrift.python.streaming.python_user_exception cimport cPythonUserException
 
 # cython doesn't support * in template parameters
 # Make a typedef to workaround this.
 ctypedef PyObject* PyObjPtr
+
 
 cdef class Promise_Py:
     cdef error_ta(Promise_Py self, cTApplicationException err)

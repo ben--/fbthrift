@@ -16,11 +16,8 @@ import asyncio
 import sys
 import traceback
 
-from thrift.python.serializer import serialize_iobuf
-from thrift.python.types import ServiceInterface
-
-cimport cython
 from cpython.ref cimport PyObject
+cimport cython
 from cython.operator cimport dereference
 from libcpp.map cimport map as cmap
 from libcpp.memory cimport make_unique, make_shared, static_pointer_cast
@@ -33,21 +30,7 @@ from libcpp.vector cimport vector as cvector
 from folly cimport cFollyPromise, cFollyUnit, c_unit
 from folly.executor cimport get_executor
 from folly.iobuf cimport IOBuf, from_unique_ptr
-from thrift.python.exceptions cimport (
-    ApplicationError,
-    cTApplicationException,
-    cTApplicationExceptionType__UNKNOWN,
-)
-from thrift.python.server_impl.request_context cimport (
-    Cpp2RequestContext,
-    handleAddressCallback,
-    RequestContext,
-    THRIFT_REQUEST_CONTEXT,
-)
-from thrift.python.server_impl.request_context import (
-    RequestContext,
-    SocketAddress,
-)
+
 from thrift.py3.stream cimport (
     cServerStream,
     cResponseAndServerStream,
@@ -55,14 +38,30 @@ from thrift.py3.stream cimport (
     createAsyncIteratorFromPyIterator,
     ServerStream
 )
-from thrift.python.types cimport ServiceInterface as cServiceInterface
+from thrift.python.exceptions cimport (
+    ApplicationError,
+    cTApplicationException,
+    cTApplicationExceptionType__UNKNOWN,
+)
 from thrift.python.protocol cimport Protocol
+from thrift.python.serializer import serialize_iobuf
+from thrift.python.server_impl.request_context cimport (
+    Cpp2RequestContext,
+    RequestContext,
+    THRIFT_REQUEST_CONTEXT,
+)
 from thrift.python.std_libcpp cimport bytes_to_string_view
 from thrift.python.streaming.py_promise cimport (
     Promise_IOBuf,
     Promise_Optional_IOBuf,
     Promise_Py,
     genNextStreamValue,
+)
+from thrift.python.streaming.bidistream cimport (
+    cStreamTransformation,
+    cResponseAndStreamTransformation,
+    createIOBufStreamTransformation,
+    createResponseAndStreamTransformation,
 )
 from thrift.python.streaming.python_user_exception cimport (
     cPythonUserException,
@@ -74,12 +73,7 @@ from thrift.python.streaming.sink cimport (
     cSinkConsumer,
     makeIOBufSinkConsumer,
 )
-from thrift.python.streaming.bidistream cimport (
-    cStreamTransformation,
-    cResponseAndStreamTransformation,
-    createIOBufStreamTransformation,
-    createResponseAndStreamTransformation,
-)
+from thrift.python.types cimport ServiceInterface as cServiceInterface
 from cpython.contextvars cimport PyContextVar_Set, PyContextVar_Reset
 
 
